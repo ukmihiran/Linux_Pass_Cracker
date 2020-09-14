@@ -9,25 +9,28 @@ import argparse
 today = datetime.today()
 
 def testPass(cryptPass,user):               #testPass function for parse the password part to determine the type of hash, the salt and the password
+    errorlog = ""
+    try:
+        pwdList = open ('/home/ukmihiran/Desktop/passlist.txt','r')    #Path to password List
+        ctype = cryptPass.split("$")[1]                 #split out ID from the encrypted Password
+        if ctype == '6':                                #ID in the encrypted Password field
+            print "[+] Hash type SHA-512 detected..."
+            print "[+] Cracking Password..."
+            salt = cryptPass.split("$")[2]                 #split out salt value from the encrypted encrypted Password
+            insalt = "$" +ctype+ "$" +salt+ "$"             # ID and salt in crypt function format
+            for word in pwdList.readlines():
+                word = word.strip('\n')
+                cryptWord = crypt.crypt(word,insalt)        #Encrypting all the word in wordList file
+                if (cryptWord == cryptPass):
+                    time = time = str(datetime.today() - today)     #time for Cracking Password
+                    print "[+] Found Password for user: " +user+ " as ========> " +word+ " Time: " +time+"\n"
+                    return
+                else:
+                    print "Nothing Found, Trying With other password..."
+                    exit
+    except Exception as e:
+        errorlog = e
 
-    pwdList = open ('/home/ukmihiran/Desktop/passlist.txt','r')    #Path to password List
-    ctype = cryptPass.split("$")[1]                 #split out ID from the encrypted Password
-
-    if ctype == '6':                                #ID in the encrypted Password field
-        print "[+] Hash type SHA-512 detected..."
-        print "[+] Cracking Password..."
-        salt = cryptPass.split("$")[2]                 #split out salt value from the encrypted encrypted Password
-        insalt = "$" +ctype+ "$" +salt+ "$"             # ID and salt in crypt function format
-        for word in pwdList.readlines():
-            word = word.strip('\n')
-            cryptWord = crypt.crypt(word,insalt)        #Encrypting all the word in wordList file
-            if (cryptWord == cryptPass):
-                time = time = str(datetime.today() - today)     #time for Cracking Password
-                print "[+] Found Password for user: " +user+ " as ========> " +word+ " Time: " +time+"\n"
-                return
-            else:
-                print "Nothing Found, Trying With other password..."
-                exit
 
 def main():
 
